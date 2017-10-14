@@ -1,0 +1,57 @@
+.container {
+  margin: 20px auto;
+  width: 600px;
+  padding: 20px;
+}
+
+th {
+  text-align: left;
+}
+
+body {
+  background-color: #A3ADB8;
+  font-family: 'PT Sans Narrow', sans-serif;
+  word-spacing: 3px;
+  color: black;
+}
+
+nav {
+  float: right;
+  padding-right: 20px;
+}
+
+nav li {
+  display: inline-block;
+}
+
+a:visited
+{
+  color: #000000;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #9932CC;
+}
+
+.user-form input{
+  display: block;
+  padding: 5px;
+}
+
+.no-style-button {
+  background: none;
+}
+
+.no-style-button input {
+  background: none;
+  padding: 0;
+  border: none;
+  font: inherit;
+  text-decoration: underline;
+}
+
+.no-style-button input:hover {
+  text-decoration: underline;
+  color: #9932CC;
+}
