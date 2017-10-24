@@ -1,28 +1,63 @@
-# render login page
-get '/sessions/new' do
-  erb :"sessions/new"
+# RESTFUL Routing:
+# display all things
+get '/things' do
+  erb :"/things/index"
 end
 
-# check database if the user exists/password is correct to allow user into app
-post '/sessions' do
-  @user = User.find_by(email: params[:email])
+# render a new thing form
+get '/things/new' do
+  authenticate!
+  erb :"/things/new"
+end
 
-  if @user && @user.authenticate(params[:password])
-    session[:user_id] = @user.id
-    redirect '/'
+# create a new thing
+post '/things' do
+  @thing = Thing.new(params[:thing])
+  authenticate!
+  
+  if @thing.valid?
+    current_user.things << @things
+    redirect "/things/#{@thing.id}"
   else
-    @errors = ["Either your email or password was wrong"]
-    erb :"sessions/new"
+    @errors = @things.errors.full_messages
+    erb :"/things/new"
   end
 end
 
-# when user decides to log out of the page, delete the session and redirect the page to index so no one can access their shit
-delete '/sessions' do
-  session.delete(:user_id)
-  redirect '/'
+# display a specific thing
+get '/things/:id' do
+  @thing = find_and_ensure(params[:id])
+  erb :"/things/show"
 end
 
-# render unauthorized page
-get '/not_authorized' do
-  erb :not_authorized
+# render an edit form for a thing
+get '/things/:id/edit' do
+  @thing = find_and_ensure(params[:id])
+  authenticate!
+  authorize!(@thing.owner)
+  erb :"/things/edit"
+end
+
+# update a thing
+put '/things/:id' do
+  @thing = find_and_ensure(params[:id])
+  authenticate!
+  authorize!(@thing.owner)
+  @thing.assign_attributes(params[:thing])
+  
+  if @thing.save
+    redirect "/things/#{params[:id]}"
+  else
+    @errors = @thing.errors.full_messages
+    erb :'things/edit'
+  end
+end
+
+# delete a specific thing
+delete '/things/:id' do
+  @thing = find_and_ensure(params[:id])
+  authenticate!
+  authorize!(@thing.owner)
+  @thing.destroy
+  redirect '/things'
 end
